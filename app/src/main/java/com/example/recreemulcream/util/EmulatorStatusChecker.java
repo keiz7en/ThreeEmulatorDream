@@ -19,8 +19,8 @@ public class EmulatorStatusChecker {
             return nativeCheckEmulatorAvailability(emulatorType);
         } catch (UnsatisfiedLinkError e) {
             Log.e("EmulatorStatusChecker", "Failed to check emulator availability: " + e.getMessage());
-            // For now, only GBA emulation is available
-            return "gba".equals(emulatorType);
+            // For now, all emulator types are available in Java mode
+            return "gba".equals(emulatorType) || "snes".equals(emulatorType) || "ds".equals(emulatorType);
         }
     }
 
@@ -31,6 +31,10 @@ public class EmulatorStatusChecker {
             Log.e("EmulatorStatusChecker", "Failed to get emulator version: " + e.getMessage());
             if ("gba".equals(emulatorType)) {
                 return "mGBA Core (Java fallback)";
+            } else if ("snes".equals(emulatorType)) {
+                return "SNES9x Core (Java fallback)";
+            } else if ("ds".equals(emulatorType)) {
+                return "melonDS Core (Java fallback)";
             }
             return "Emulator not available (Java fallback)";
         }

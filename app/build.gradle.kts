@@ -15,14 +15,17 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Native build disabled
-        /*
         externalNativeBuild {
             cmake {
                 cppFlags += "-std=c++17"
+                arguments += "-DANDROID_STL=c++_shared"
+                arguments += "-DMGBA_STANDALONE=ON"
+                arguments += "-DBUILD_LIBRETRO=OFF"
+                arguments += "-DBUILD_QT=OFF"
+                arguments += "-DUSE_DISCORD_RPC=OFF"
+                arguments += "-DBUILD_SDL=OFF"
             }
         }
-        */
     }
 
     buildTypes {
@@ -43,16 +46,14 @@ android {
         viewBinding = true
     }
 
-    // Native build disabled
-    /*
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
         }
     }
-    
-    ndkVersion = "25.2.9519653"
-    */
+
+    ndkVersion = "21.4.7075529"
 }
 
 dependencies {

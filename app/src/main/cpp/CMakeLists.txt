@@ -1,49 +1,48 @@
-cmake_minimum_required(VERSION 3.10)
-project("recreemulcream")
+cmake_minimum_required(VERSION 3.18.1)
+project(recreemulcream)
 
-# Set compile flags
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Include directories
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../mgba-master/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../mgba-master/src
-)
+# Add compiler flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -frtti")
 
-# Create main library with basic files
-add_library(recreemulcream SHARED
+# Define source files
+set(SOURCES
     native-lib.cpp
+    file_utils.cpp
+    emulator_snes9x.cpp
     emulator_mgba.cpp
+    emulator_melonds.cpp
 )
 
-# Basic libraries to link against
+# Define main library target
+add_library(recreemulcream SHARED ${SOURCES})
+
+# Create DS emulation library
+add_library(ds-lib SHARED
+    emulator_melonds.cpp
+)
+
+# Link libraries for the main target
 target_link_libraries(recreemulcream
     android
     log
+    jnigraphics
     EGL
     GLESv2
+    z
+)
+
+# Link libraries for DS emulation
+target_link_libraries(ds-lib
+    android
+    log
     jnigraphics
+    z
 )
 
-# Configure mGBA build - Simplified approach
-# Create a minimalist mGBA Core
-file(GLOB MGBA_CORE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../mgba-master/src/core/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../mgba-master/src/gba/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../mgba-master/src/arm/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../mgba-master/src/util/*.c
-)
-
-add_library(mgba-core STATIC ${MGBA_CORE_SOURCES})
-
-target_compile_definitions(mgba-core PRIVATE
-    MINIMAL_CORE=1
-    M_CORE_GBA=1
-    COLOR_16_BIT=1
-    DISABLE_THREADING=1
-)
-
-# Link to our main library
-target_link_libraries(recreemulcream mgba-core)
+# Add definitions
+add_definitions(-DENABLE_FALLBACK_MODE=1)
+add_definitions(-DENABLE_EMULATORS=1)

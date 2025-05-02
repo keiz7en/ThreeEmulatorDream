@@ -24,7 +24,11 @@ public class SnesEmulatorBridge implements EmulatorBridge {
     private Bitmap frameBuffer;
 
     static {
-        System.loadLibrary("recreemulcream");
+        try {
+            System.loadLibrary("recreemulcream");
+        } catch (UnsatisfiedLinkError e) {
+            Log.e(TAG, "Error loading native library: " + e.getMessage());
+        }
     }
 
     public SnesEmulatorBridge(Context context) {

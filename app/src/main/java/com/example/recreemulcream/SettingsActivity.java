@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.recreemulcream.databinding.ActivitySettingsBinding;
 
@@ -51,26 +53,31 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setupSettings() {
         // FPS counter toggle
-        binding.fpsCounterSwitch.setChecked(getBooleanPreference(KEY_FPS_COUNTER, false));
-        binding.fpsCounterSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        SwitchCompat fpsCounterSwitch = findViewById(R.id.fpsCounterSwitch);
+        fpsCounterSwitch.setChecked(getBooleanPreference(KEY_FPS_COUNTER, false));
+        fpsCounterSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             savePreference(KEY_FPS_COUNTER, isChecked);
         });
 
         // Frame skip toggle
-        binding.frameSkipSwitch.setChecked(getBooleanPreference(KEY_FRAME_SKIP, false));
-        binding.frameSkipSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        SwitchCompat frameSkipSwitch = findViewById(R.id.frameSkipSwitch);
+        frameSkipSwitch.setChecked(getBooleanPreference(KEY_FRAME_SKIP, false));
+        frameSkipSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             savePreference(KEY_FRAME_SKIP, isChecked);
         });
 
         // Audio latency slider
-        int latency = getIntPreference(KEY_AUDIO_LATENCY, 3);
-        binding.audioLatencySeekBar.setProgress(latency);
-        binding.audioLatencyValue.setText(String.format("%d ms", latency * 10));
+        SeekBar audioLatencySeekBar = findViewById(R.id.audioLatencySeekBar);
+        TextView audioLatencyValue = findViewById(R.id.audioLatencyValue);
 
-        binding.audioLatencySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        int latency = getIntPreference(KEY_AUDIO_LATENCY, 3);
+        audioLatencySeekBar.setProgress(latency);
+        audioLatencyValue.setText(String.format("%d ms", latency * 10));
+
+        audioLatencySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                binding.audioLatencyValue.setText(String.format("%d ms", progress * 10));
+                audioLatencyValue.setText(String.format("%d ms", progress * 10));
             }
 
             @Override
@@ -84,20 +91,25 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // Scaling mode radio buttons
+        android.widget.RadioGroup scalingRadioGroup = findViewById(R.id.scalingRadioGroup);
+        android.widget.RadioButton scalingOriginalRadio = findViewById(R.id.scalingOriginalRadio);
+        android.widget.RadioButton scalingStretchRadio = findViewById(R.id.scalingStretchRadio);
+        android.widget.RadioButton scalingPixelPerfectRadio = findViewById(R.id.scalingPixelPerfectRadio);
+
         int scalingMode = getIntPreference(KEY_SCALING_MODE, 0);
         switch (scalingMode) {
             case 0:
-                binding.scalingOriginalRadio.setChecked(true);
+                scalingOriginalRadio.setChecked(true);
                 break;
             case 1:
-                binding.scalingStretchRadio.setChecked(true);
+                scalingStretchRadio.setChecked(true);
                 break;
             case 2:
-                binding.scalingPixelPerfectRadio.setChecked(true);
+                scalingPixelPerfectRadio.setChecked(true);
                 break;
         }
 
-        binding.scalingRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+        scalingRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             int mode = 0;
             if (checkedId == R.id.scalingStretchRadio) {
                 mode = 1;
@@ -107,13 +119,15 @@ public class SettingsActivity extends AppCompatActivity {
             savePreference(KEY_SCALING_MODE, mode);
         });
 
-        // Setup button remapping
-        binding.buttonRemappingButton.setOnClickListener(v -> {
+        // Button remapping option
+        Button buttonRemappingButton = findViewById(R.id.buttonRemappingButton);
+        buttonRemappingButton.setOnClickListener(v -> {
             showButtonRemappingDialog();
         });
 
-        // Setup button customization
-        binding.buttonCustomizationButton.setOnClickListener(v -> {
+        // Button customization option
+        Button buttonCustomizationButton = findViewById(R.id.buttonCustomizationButton);
+        buttonCustomizationButton.setOnClickListener(v -> {
             showButtonCustomizationDialog();
         });
     }

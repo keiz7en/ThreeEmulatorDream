@@ -203,6 +203,14 @@
                     android:layout_height="wrap_content"
                     android:text="Button Remapping"
                     android:textAllCaps="false" />
+
+                <Button
+                        android:id="@+id/buttonCustomizationButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Button Size &amp; Appearance"
+                        android:textAllCaps="false"
+                        android:layout_marginTop="8dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

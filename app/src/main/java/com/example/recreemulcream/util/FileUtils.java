@@ -23,42 +23,19 @@ import java.util.List;
 public class FileUtils {
     private static final String TAG = "FileUtils";
 
-    // Temporary Java implementations
-    public String nativeGetRealPath(String contentUriPath) {
-        return contentUriPath; // Simple pass-through for now
-    }
+    // Native methods
+    private native String nativeGetRealPath(String contentUriPath);
 
-    public String[] nativeListFiles(String dirPath, String[] extensions) {
-        // Temporary Java implementation
-        File dir = new File(dirPath);
-        List<String> results = new ArrayList<>();
+    private native boolean nativeFileExists(String filePath);
 
-        if (dir.exists() && dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        String name = file.getName().toLowerCase();
-                        for (String ext : extensions) {
-                            if (name.endsWith(ext.toLowerCase())) {
-                                results.add(file.getAbsolutePath());
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+    private native boolean copyAssetFile(android.content.res.AssetManager assetManager, String assetName, String outputPath);
+
+    static {
+        try {
+            System.loadLibrary("recreemulcream");
+        } catch (UnsatisfiedLinkError e) {
+            Log.e(TAG, "Failed to load native library: " + e.getMessage());
         }
-
-        return results.toArray(new String[0]);
-    }
-
-    public boolean nativeFileExists(String filePath) {
-        return new File(filePath).exists();
-    }
-
-    public boolean nativeMkdir(String dirPath) {
-        return new File(dirPath).mkdirs();
     }
 
     /**
@@ -197,5 +174,55 @@ public class FileUtils {
             return filePath.substring(lastDot);
         }
         return "";
+    }
+
+    /**
+     * Copy BIOS files from assets to local storage
+     *
+     * @param context Android context
+     * @param biosDir Directory to store BIOS files
+     * @return true if all required BIOS files were copied successfully
+     */
+    public static boolean copyBiosFiles(Context context, String biosDir) {
+        try {
+            // Create the directory if it doesn't exist
+            File biosDirFile = new File(biosDir);
+            if (!biosDirFile.exists()) {
+                biosDirFile.mkdirs();
+            }
+
+            // Get asset manager
+            android.content.res.AssetManager assetManager = context.getAssets();
+
+            // List all files in the bios folder of assets
+            String[] biosAssets = assetManager.list("bios");
+            if (biosAssets == null || biosAssets.length == 0) {
+                Log.e(TAG, "No BIOS files found in assets");
+                return false;
+            }
+
+            // Create a FileUtils instance for native method access
+            FileUtils utils = new FileUtils();
+
+            // Copy each BIOS file
+            boolean allCopied = true;
+            for (String biosFile : biosAssets) {
+                File outputFile = new File(biosDir, biosFile);
+                if (!outputFile.exists()) {
+                    boolean success = utils.copyAssetFile(assetManager, "bios/" + biosFile, outputFile.getAbsolutePath());
+                    if (!success) {
+                        Log.e(TAG, "Failed to copy BIOS file: " + biosFile);
+                        allCopied = false;
+                    } else {
+                        Log.d(TAG, "BIOS file copied: " + biosFile);
+                    }
+                }
+            }
+
+            return allCopied;
+        } catch (Exception e) {
+            Log.e(TAG, "Error copying BIOS files", e);
+            return false;
+        }
     }
 }

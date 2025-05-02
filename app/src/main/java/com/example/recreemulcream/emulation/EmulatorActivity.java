@@ -233,16 +233,42 @@ public class EmulatorActivity extends AppCompatActivity implements SurfaceHolder
 
     private boolean saveState() {
         if (emulatorBridge != null) {
-            return emulatorBridge.saveState();
+            boolean success = emulatorBridge.saveState();
+            // Show a visual indicator that state was saved
+            if (success) {
+                showSaveStateIndicator();
+            }
+            return success;
         }
         return false;
     }
 
     private boolean loadState() {
         if (emulatorBridge != null) {
-            return emulatorBridge.loadState();
+            boolean success = emulatorBridge.loadState();
+            // Show a visual indicator that state was loaded
+            if (success) {
+                showLoadStateIndicator();
+            }
+            return success;
         }
         return false;
+    }
+
+    private void showSaveStateIndicator() {
+        // Create and show a brief "State Saved" indicator in the UI
+        View container = findViewById(android.R.id.content);
+        if (container != null) {
+            Toast.makeText(this, "Game state saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showLoadStateIndicator() {
+        // Create and show a brief "State Loaded" indicator in the UI
+        View container = findViewById(android.R.id.content);
+        if (container != null) {
+            Toast.makeText(this, "Game state loaded", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateFpsCounter(int fps) {

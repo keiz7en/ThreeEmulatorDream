@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RecreEmulCream</string>
     <string name="app_title">RecreEmulCream</string>
     <string name="select_console">Select a Console</string>
-
     <!-- Console names -->
     <string name="nes">NES</string>
     <string name="snes">SNES</string>

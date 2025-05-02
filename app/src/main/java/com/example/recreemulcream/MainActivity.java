@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    // Used to load the native library on application startup
+    static {
+        try {
+            System.loadLibrary("recreemulcream");
+        } catch (UnsatisfiedLinkError e) {
+            // Handle native library load failure
+        }
+    }
 
     private ActivityMainBinding binding;
     private PermissionsHelper permissionsHelper;
@@ -146,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 extensions = new String[]{};
+                break;
         }
 
         FilePickerHelper.pickRomFile(this, extensions);
@@ -178,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 extensions = new String[]{};
+                break;
         }
 
         // Start scanning

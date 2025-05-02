@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.example.recreemulcream.emulation.input.InputHandler;
+import com.example.recreemulcream.util.FileUtils;
 
 import java.io.File;
 
@@ -29,7 +30,11 @@ public class DsEmulatorBridge implements EmulatorBridge {
     private int touchY = -1;
 
     static {
-        System.loadLibrary("recreemulcream");
+        try {
+            System.loadLibrary("ds-lib");
+        } catch (UnsatisfiedLinkError e) {
+            Log.e(TAG, "Error loading native library: ds-lib", e);
+        }
     }
 
     public DsEmulatorBridge(Context context) {
@@ -49,8 +54,18 @@ public class DsEmulatorBridge implements EmulatorBridge {
             biosDirFile.mkdirs();
         }
 
+        // Check for BIOS files
+        copyBiosFilesIfNeeded(context, biosDir);
+
         // Create framebuffer for DS (256x384, combining both screens)
         frameBuffer = Bitmap.createBitmap(256, 384, Bitmap.Config.ARGB_8888);
+    }
+
+    /**
+     * Copy BIOS files from assets to the device if they don't exist
+     */
+    private void copyBiosFilesIfNeeded(Context context, String biosDir) {
+        FileUtils.copyBiosFiles(context, biosDir);
     }
 
     @Override
@@ -58,7 +73,7 @@ public class DsEmulatorBridge implements EmulatorBridge {
         Log.d(TAG, "Initializing DS emulator with ROM: " + romPath);
         this.romPath = romPath;
 
-        // Look for BIOS files
+        // Check for BIOS files
         File bios7File = new File(biosDir, "bios7.bin");
         File bios9File = new File(biosDir, "bios9.bin");
         File firmwareFile = new File(biosDir, "firmware.bin");
@@ -68,8 +83,8 @@ public class DsEmulatorBridge implements EmulatorBridge {
             return false;
         }
 
-        // Initialize with ROM and BIOS paths
-        isInitialized = nativeInitialize(romPath, biosDir);
+        // Initialize with ROM
+        isInitialized = nativeInitialize(romPath);
         return isInitialized;
     }
 
@@ -80,8 +95,8 @@ public class DsEmulatorBridge implements EmulatorBridge {
         }
 
         // Run a frame and draw to the bitmap
-        boolean frameRendered = nativeRunFrame(frameBuffer);
-        if (!frameRendered) {
+        int frameResult = nativeRunFrame(frameBuffer);
+        if (frameResult == 0) {
             return 0;
         }
 
@@ -121,7 +136,7 @@ public class DsEmulatorBridge implements EmulatorBridge {
             // Update touch screen coordinates
             updateTouchCoordinates(buttonStates);
 
-            nativeUpdateInput(buttonMask, touchX, touchY);
+            nativeSetInput(buttonStates);
         }
 
         // Return approximate time (in milliseconds) until next frame should be drawn
@@ -141,11 +156,9 @@ public class DsEmulatorBridge implements EmulatorBridge {
         // For simplicity, we're not implementing this in detail here
 
         if (isTouching) {
-            // Screen touch coordinates can be set here - for now using center of screen
             touchX = 128;
             touchY = 96;
         } else {
-            // No touching
             touchX = -1;
             touchY = -1;
         }
@@ -201,15 +214,12 @@ public class DsEmulatorBridge implements EmulatorBridge {
     }
 
     // Native methods
-    private native boolean nativeInitialize(String romPath, String biosPath);
+    private native boolean nativeInitialize(String romPath);
 
-    private native boolean nativeRunFrame(Bitmap bitmap);
+    private native int nativeRunFrame(Bitmap bitmap);
 
-    private native void nativeUpdateInput(int buttonsState, int touchX, int touchY);
-
+    private native void nativeSetInput(int[] buttonState);
     private native boolean nativeSaveState(String path);
-
     private native boolean nativeLoadState(String path);
-
     private native void nativeCleanup();
 }

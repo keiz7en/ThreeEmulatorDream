@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -60,6 +61,9 @@ public class VirtualGamepad implements InputHandler {
         } else {
             hideXYButtons(controlsLayout);
         }
+
+        // Apply button size from preferences
+        applyButtonCustomization(controlsLayout);
     }
 
     private void setupDpad(ConstraintLayout controlsLayout) {
@@ -142,6 +146,55 @@ public class VirtualGamepad implements InputHandler {
             }
             return false;
         });
+    }
+
+    /**
+     * Apply button size and opacity settings from preferences
+     */
+    private void applyButtonCustomization(ConstraintLayout controlsLayout) {
+        SharedPreferences prefs = context.getSharedPreferences("EmulatorPrefs", Context.MODE_PRIVATE);
+        int buttonSize = prefs.getInt("button_size", 50); // Default 50%
+        int buttonOpacity = prefs.getInt("button_opacity", 70); // Default 70%
+
+        float scaleFactor = 0.5f + (buttonSize / 100f); // Scale from 0.5 to 1.5
+        float alpha = buttonOpacity / 100f;
+
+        // Apply to all control buttons
+        applyScaleToButtonGroup(controlsLayout.findViewById(R.id.dpadContainer), scaleFactor, alpha);
+        applyScaleToButtonGroup(controlsLayout.findViewById(R.id.actionButtonsContainer), scaleFactor, alpha);
+        applyScaleToButtonGroup(controlsLayout.findViewById(R.id.menuButtonsContainer), scaleFactor, alpha);
+        applyScaleToButtonGroup(controlsLayout.findViewById(R.id.shoulderButtonsContainer), scaleFactor, alpha);
+    }
+
+    /**
+     * Apply scale to a button container and its children
+     */
+    private void applyScaleToButtonGroup(View container, float scale, float alpha) {
+        if (container == null) return;
+
+        container.setAlpha(alpha);
+
+        if (container instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) container;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                View child = group.getChildAt(i);
+                ViewGroup.LayoutParams params = child.getLayoutParams();
+
+                if (params.width > 0) {
+                    params.width = (int) (params.width * scale);
+                }
+                if (params.height > 0) {
+                    params.height = (int) (params.height * scale);
+                }
+
+                child.setLayoutParams(params);
+
+                // Handle nested ViewGroups
+                if (child instanceof ViewGroup) {
+                    applyScaleToButtonGroup(child, scale, alpha);
+                }
+            }
+        }
     }
 
     /**

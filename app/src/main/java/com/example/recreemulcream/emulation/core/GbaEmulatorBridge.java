@@ -207,7 +207,6 @@ public class GbaEmulatorBridge implements EmulatorBridge {
     // Native methods
     private native boolean nativeInitialize(String romPath);
     private native boolean nativeRunFrame(Bitmap bitmap);
-
     private native void nativeUpdateInput(int buttonMask);
     private native boolean nativeSaveState(String path);
     private native boolean nativeLoadState(String path);
