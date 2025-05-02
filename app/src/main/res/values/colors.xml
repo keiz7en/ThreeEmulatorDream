@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Default Android template colors (for backward compatibility) -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <!-- App theme colors -->
+    <color name="primary">#FF3F51B5</color>
+    <color name="primary_dark">#FF303F9F</color>
+    <color name="primary_light">#FFC5CAE9</color>
+    <color name="accent">#FFFF4081</color>
+    <color name="background_color">#FF121212</color>
+    <color name="title_color">#FFFFFFFF</color>
+    <color name="subtitle_color">#FFBBBBBB</color>
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FFBBBBBB</color>
+
+    <!-- Console card colors -->
+    <color name="console_card_bg">#FF2A2A2A</color>
+    <color name="console_selected_bg">#FF3F51B5</color>
+
+    <!-- Emulator control colors -->
+    <color name="control_button_bg">#80000000</color>
+    <color name="control_button_pressed">#80FFFFFF</color>
+</resources>

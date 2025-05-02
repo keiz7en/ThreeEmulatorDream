@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".emulation.EmulatorActivity">
+
+    <!-- Emulator Surface View -->
+    <SurfaceView
+        android:id="@+id/emulatorSurface"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- FPS Counter -->
+    <TextView
+        android:id="@+id/fpsCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FPS: 60"
+        android:textColor="#FFFF00"
+        android:textSize="14sp"
+        android:padding="8dp"
+        android:visibility="gone"
+        android:background="#80000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Control Buttons -->
+    <LinearLayout
+        android:id="@+id/actionButtonsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:background="#80000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fpsCounter">
+
+        <ImageButton
+            android:id="@+id/pauseButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_pause"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/pause"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/saveButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_save"
+            android:background="@android:color/transparent"
+            android:contentDescription="Save State"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/loadButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_load"
+            android:background="@android:color/transparent"
+            android:contentDescription="Load State" />
+    </LinearLayout>
+
+    <!-- Virtual Controls Container -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/controlsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- D-Pad Container (Left Side) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dpadContainer"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageButton
+                android:id="@+id/buttonUp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/dpad_button"
+                android:contentDescription="Up"
+                android:src="@drawable/ic_arrow_up"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/buttonLeft"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/dpad_button"
+                android:contentDescription="Left"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/buttonRight"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/dpad_button"
+                android:contentDescription="Right"
+                android:src="@drawable/ic_arrow_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/buttonDown"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/dpad_button"
+                android:contentDescription="Down"
+                android:src="@drawable/ic_arrow_down"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Action Buttons Container (Right Side) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/actionButtonsContainer"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <Button
+                android:id="@+id/buttonA"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/action_button"
+                android:text="@string/button_a"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/buttonB"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/action_button"
+                android:text="@string/button_b"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonX"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/action_button"
+                android:text="@string/button_x"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/buttonY"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/action_button"
+                android:text="@string/button_y"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Start/Select Buttons -->
+        <LinearLayout
+            android:id="@+id/menuButtonsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dpadContainer"
+            app:layout_constraintEnd_toStartOf="@+id/actionButtonsContainer">
+
+            <Button
+                    android:id="@+id/buttonSelect"
+                    android:layout_width="72dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/menu_button"
+                    android:text="@string/button_select"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"/>
+
+            <Button
+                    android:id="@+id/buttonStart"
+                    android:layout_width="72dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/menu_button"
+                    android:text="@string/button_start"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+
+        <!-- Shoulder Buttons (L/R) - Only visible for SNES and GBA -->
+        <LinearLayout
+            android:id="@+id/shoulderButtonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="16dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/buttonL"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="0.5"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/shoulder_button"
+                android:text="@string/button_l"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/buttonR"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/shoulder_button"
+                android:text="@string/button_r"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <!-- Hide ROM name display -->
+        <TextView
+                android:id="@+id/romNameDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:background="#80000000"
+                android:padding="4dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
