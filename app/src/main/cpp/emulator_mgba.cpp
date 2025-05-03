@@ -10,15 +10,7 @@
 #include <math.h>
 
 // mGBA headers
-#ifdef __has_include
-#if __has_include("mgba/core/core.h") && !defined(ENABLE_FALLBACK_MODE)
-#define HAS_MGBA_HEADERS 1
-#else
 #define HAS_MGBA_HEADERS 0
-#endif
-#else
-#define HAS_MGBA_HEADERS 0
-#endif
 
 #if HAS_MGBA_HEADERS
 // Use the real headers

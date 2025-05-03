@@ -9,16 +9,7 @@
 #include <android/bitmap.h>
 #include <math.h>
 
-// Check for melonDS headers
-#ifdef __has_include
-#if __has_include("NDS.h") && !defined(ENABLE_FALLBACK_MODE)
-#define HAS_MELONDS_HEADERS 1
-#else
 #define HAS_MELONDS_HEADERS 0
-#endif
-#else
-#define HAS_MELONDS_HEADERS 0
-#endif
 
 #if HAS_MELONDS_HEADERS
 #include "NDS.h"

@@ -8,34 +8,40 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -frtti")
 
-# Define source files
-set(SOURCES
-    native-lib.cpp
-    file_utils.cpp
-    emulator_snes9x.cpp
-    emulator_mgba.cpp
-    emulator_melonds.cpp
+# Define minimal stub source files
+set(STUB_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/native-lib.cpp
 )
 
-# Define main library target
-add_library(recreemulcream SHARED ${SOURCES})
+# Main library for GBA and SNES
+add_library(recreemulcream SHARED
+    ${STUB_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/emulator_mgba.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/emulator_snes9x.cpp
+)
 
-# Create DS emulation library
+# Separate DS library
 add_library(ds-lib SHARED
-    emulator_melonds.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/emulator_melonds.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/file_utils.cpp
 )
 
-# Link libraries for the main target
+# Enable fallback mode to avoid relying on complex dependencies
+target_compile_definitions(recreemulcream PRIVATE
+    MINIMAL_IMPLEMENTATION=1
+)
+
+target_compile_definitions(ds-lib PRIVATE
+    MINIMAL_IMPLEMENTATION=1
+)
+
+# Link with required Android libraries
 target_link_libraries(recreemulcream
     android
     log
     jnigraphics
-    EGL
-    GLESv2
-    z
 )
 
-# Link libraries for DS emulation
 target_link_libraries(ds-lib
     android
     log

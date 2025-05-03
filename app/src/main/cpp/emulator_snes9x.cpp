@@ -4,16 +4,7 @@
 #include <android/native_window_jni.h>
 #include <android/log.h>
 
-// SNES9x headers
-#ifdef __has_include
-#if __has_include("snes9x.h")
-#define HAS_SNES9X_HEADERS 1
-#else
 #define HAS_SNES9X_HEADERS 0
-#endif
-#else
-#define HAS_SNES9X_HEADERS 0
-#endif
 
 #if HAS_SNES9X_HEADERS
 #include "snes9x.h"
